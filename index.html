@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Bite Restaurant Booking</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .seat.filled {
+      background-color: #00cc99 !important;
+    }
+
+    .error-message {
+      color: red;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .table {
+      position: relative;
+    }
+
+    .capacity-label {
+      position: absolute;
+      top: -20px;
+      right: 10px;
+      background: #fff;
+      color: #000;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="modal" id="successModal">
+    <div class="modal-success">
+      <h3>🎉 Reservation Successful!</h3>
+      <p id="successText"></p>
+      <button onclick="closeModal('successModal')">Close</button>
+    </div>
+  </div>
+
+  <div class="modal" id="errorModal">
+    <div class="modal-error">
+      <h3>⚠️ Error</h3>
+      <p id="errorText"></p>
+      <button onclick="closeModal('errorModal')">Close</button>
+    </div>
+  </div>
+
+  <div class="modal" id="detailsModal">
+    <div class="modal-content details-modal">
+      <h3>Reservation Details</h3>
+      <div id="detailsText" class="details-info"></div>
+      <button onclick="closeModal('detailsModal')">Close</button>
+    </div>
+  </div>
+
+  <div class="left-section">
+    <h2>Most popular dishes</h2>
+    <div class="dishes">
+      <div class="dish" onclick="selectDish(this, 'Wok On Walk')">
+        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80"
+          alt="Wok On Walk">
+        <div class="dish-info">
+          <strong>Wok On Walk</strong><br>
+          ₱450
+        </div>
+      </div>
+
+      <div class="dish" onclick="selectDish(this, 'Grilled Tofu Bowl')">
+        <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=400&q=80"
+          alt="Grilled Tofu Bowl">
+        <div class="dish-info">
+          <strong>Grilled Tofu Bowl</strong><br>
+          ₱200
+        </div>
+      </div>
+
+      <div class="dish" onclick="selectDish(this, 'Spicy Tuna Bowl')">
+        <img src="https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=400&q=80"
+          alt="Spicy Tuna Bowl">
+        <div class="dish-info">
+          <strong>Spicy Tuna Bowl</strong><br>
+          ₱350
+        </div>
+      </div>
+
+      <div class="dish" onclick="selectDish(this, 'Salmon Delight')">
+        <img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=400&q=80"
+          alt="Salmon Delight">
+        <div class="dish-info">
+          <strong>Salmon Delight</strong><br>
+          ₱520
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="right-section">
+    <div class="booking-header">
+      <h2>Restaurant booking</h2>
+      <span id="peopleCount">Guest capacity: 13</span>
+    </div>
+    <div class="times" id="timeButtonsContainer"></div>
+    <div class="tables">
+      <div class="table" data-capacity="5" data-name="The big table" onclick="selectTable(this, 'The big table')">
+        The big table <span class="capacity-label">5 seats</span>
+        <div class="seats">
+          <div class="seat"></div>
+          <div class="seat"></div>
+          <div class="seat"></div>
+          <div class="seat"></div>
+          <div class="seat"></div>
+        </div>
+      </div>
+      <div class="table" data-capacity="4" data-name="Table 1" onclick="selectTable(this, 'Table 1')">
+        Table 1 <span class="capacity-label">4 seats</span>
+        <div class="seats">
+          <div class="seat"></div>
+          <div class="seat"></div>
+          <div class="seat"></div>
+          <div class="seat"></div>
+        </div>
+      </div>
+      <div class="table" data-capacity="4" data-name="Table 2" onclick="selectTable(this, 'Table 2')">
+        Table 2 <span class="capacity-label">4 seats</span>
+        <div class="seats">
+          <div class="seat"></div>
+          <div class="seat"></div>
+          <div class="seat"></div>
+          <div class="seat"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="formModal">
+    <div class="modal-content reservation-modal">
+      <h3>Reserve Your Table</h3>
+      <form id="reservationForm" class="reservation-form">
+        <div class="form-group">
+          <label for="name">👤 Your Name</label>
+          <input type="text" id="name" name="name" placeholder="Enter your name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="guestCount">👥 Number of Guests</label>
+          <input type="number" id="guestCount" name="guestCount" min="1" required>
+        </div>
+
+        <div class="form-group">
+          <label for="selectedTime">🕒 Time</label>
+          <input type="text" id="selectedTime" name="selectedTime" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="selectedTable">🪑 Table</label>
+          <input type="text" id="selectedTable" name="selectedTable" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="date">📅 Date</label>
+          <input type="date" id="date" name="date" required>
+        </div>
+
+        <div class="form-buttons">
+          <button type="submit" class="btn-confirm">Confirm</button>
+          <button type="button" class="btn-cancel" onclick="closeModal('formModal')">Cancel</button>
+        </div>
+
+        <div id="confirmationMessage"></div>
+        <div id="errorMessage" class="error-message"></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let selectedTable = '';
+    let selectedTime = '';
+    let selectedTableElement = null;
+
+    function selectTime(button) {
+      document.querySelectorAll('.times button').forEach(btn => btn.classList.remove('selected'));
+      button.classList.add('selected');
+      selectedTime = button.dataset.time;
+      document.getElementById('selectedTime').value = selectedTime;
+    }
+
+    function selectTable(el, name) {
+      const isReserved = el.classList.contains('reserved');
+
+      if (isReserved && el.dataset.reservation) {
+        const data = JSON.parse(el.dataset.reservation);
+        const message = `Name: ${data.name}<br>Guests: ${data.guests}<br>Time: ${data.time}<br>Date: ${data.date}`;
+        document.getElementById('detailsText').innerHTML = message;
+        document.getElementById('detailsModal').style.display = 'flex';
+        return;
+      }
+
+      document.querySelectorAll('.table').forEach(tbl => tbl.classList.remove('selected'));
+      document.querySelectorAll('.seat').forEach(seat => seat.classList.remove('filled'));
+      el.classList.add('selected');
+      selectedTable = name;
+      selectedTableElement = el;
+      document.getElementById('selectedTable').value = name;
+
+      // Show reservation form modal only if not reserved
+      document.getElementById('formModal').style.display = 'flex';
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    document.getElementById('reservationForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const guestCount = parseInt(document.getElementById('guestCount').value);
+      const seats = selectedTableElement ? selectedTableElement.querySelectorAll('.seat') : [];
+      const capacity = parseInt(selectedTableElement?.dataset.capacity || '0');
+      const errorText = document.getElementById('errorText');
+      const successText = document.getElementById('successText');
+
+      if (guestCount > capacity) {
+        errorText.textContent = `Error: Guest count (${guestCount}) exceeds table capacity (${capacity}).`;
+        closeModal('formModal');
+        document.getElementById('errorModal').style.display = 'block';
+        return;
+      }
+
+      const name = document.getElementById('name').value;
+      const time = document.getElementById('selectedTime').value;
+      const table = document.getElementById('selectedTable').value;
+      const date = document.getElementById('date').value;
+
+      try {
+        const response = await fetch('submit.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            name,
+            guestCount,
+            selectedTime: time,
+            selectedTable: table,
+            date
+          })
+
+        });
+
+        const result = await response.text();
+
+        if (response.ok && result.toLowerCase().includes('success')) {
+          seats.forEach((seat, index) => {
+            seat.classList.toggle('filled', index < guestCount);
+          });
+
+          successText.textContent = `Reservation confirmed for ${name} with ${guestCount} guest(s) on ${date} at ${time}, Table: ${table}.`;
+
+          closeModal('formModal'); // ✅ hide form before showing modal
+          document.getElementById('successModal').style.display = 'flex';
+        } else {
+          errorText.textContent = 'Reservation failed. Please try again.';
+          document.getElementById('errorModal').style.display = 'flex';
+        }
+      } catch (err) {
+        console.error('Submission error:', err);
+        errorText.textContent = 'An error occurred. Please try again.';
+        document.getElementById('errorModal').style.display = 'flex';
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const dateInput = document.getElementById('date');
+      const timeButtonsContainer = document.getElementById('timeButtonsContainer');
+      const selectedTimeInput = document.getElementById('selectedTime');
+      let timeButtons = [];
+
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      const currentDate = `${yyyy}-${mm}-${dd}`;
+      dateInput.value = currentDate;
+
+      // Generate time buttons: 8:00 AM to 10:00 PM
+      for (let hour = 8; hour <= 22; hour++) {
+        const time24 = `${String(hour).padStart(2, '0')}:00`;
+        const hour12 = hour % 12 || 12;
+        const ampm = hour < 12 ? 'AM' : 'PM';
+        const label = `${hour12}:00 ${ampm}`;
+
+        const btn = document.createElement('button');
+        btn.textContent = label;
+        btn.dataset.time = time24;
+        btn.type = 'button';
+        btn.onclick = () => {
+          selectTime(btn);
+          updateReservations();
+        };
+
+        timeButtonsContainer.appendChild(btn);
+        timeButtons.push(btn);
+      }
+
+      // Auto-select first slot
+      if (timeButtons.length > 0) {
+        timeButtons[0].classList.add('selected');
+        selectedTime = timeButtons[0].dataset.time;
+        selectedTimeInput.value = selectedTime;
+        fetchReservations(currentDate, selectedTime);
+      }
+
+      async function fetchReservations(date, time) {
+        try {
+          const response = await fetch(`fetch_reservations.php?date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}`);
+          const reservations = await response.json();
+
+          document.querySelectorAll('.seat').forEach(seat => seat.classList.remove('filled'));
+          document.querySelectorAll('.table').forEach(table => {
+            table.classList.remove('reserved');
+            delete table.dataset.reservation;
+          });
+
+          reservations.forEach(res => {
+            const selector = `.table[data-name="${res.table_name.replace(/"/g, '&quot;')}"]`;
+            const tableElement = document.querySelector(selector);
+            if (tableElement) {
+              const seats = tableElement.querySelectorAll('.seat');
+              const guests = parseInt(res.guests);
+
+              for (let i = 0; i < guests && i < seats.length; i++) {
+                seats[i].classList.add('filled');
+              }
+
+              tableElement.classList.add('reserved');
+
+              tableElement.dataset.reservation = JSON.stringify({
+                name: res.name,
+                guests: res.guests,
+                dish: res.dish,
+                time: res.time,
+                date: res.date
+              });
+            }
+          });
+
+        } catch (err) {
+          console.error('Error fetching reservations:', err);
+        }
+      }
+
+
+      function updateReservations() {
+        const date = dateInput.value;
+        const timeBtn = timeButtons.find(btn => btn.classList.contains('selected'));
+        const time = timeBtn ? timeBtn.dataset.time : null;
+        if (date && time) fetchReservations(date, time);
+      }
+
+      dateInput.addEventListener('change', updateReservations);
+    });
+  </script>
+
+</body>
+
+</html>
