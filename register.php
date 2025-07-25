@@ -17,7 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Hash password
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        // Save to database (example using mysqli)
         $conn = new mysqli('localhost', 'root', '', 'restaurant');
         if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 
