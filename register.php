@@ -81,6 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="role">Role</label>
                 <select name="role" id="role" required>
                     <option value="">Select role</option>
+                    <option value="staff" <?= (isset($role) && $role === 'staff') ? 'selected' : '' ?>>Staff</option>
                     <option value="customer" <?= (isset($role) && $role === 'customer') ? 'selected' : '' ?>>Customer</option>
                     <option value="admin" <?= (isset($role) && $role === 'admin') ? 'selected' : '' ?>>Admin</option>
                 </select>
