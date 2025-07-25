@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
-            background: linear-gradient(135deg, #27ae60 0%, #2980b9 100%);
+                     background: linear-gradient(to right, #ff5e4d, #ffc371);
             min-height: 100vh;
             margin: 0;
             font-family: 'Segoe UI', Arial, sans-serif;
@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         button {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(90deg, #27ae60 0%, #2980b9 100%);
+            background: linear-gradient(to right, #ff5e4d, #ffc371);
             color: #fff;
             border: none;
             border-radius: 8px;
