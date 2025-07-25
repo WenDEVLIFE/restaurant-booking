@@ -54,7 +54,7 @@ $stats_result = $conn->query($stats_sql);
 $stats = $stats_result->fetch_assoc();
 
 // Fetch all bookings
-$bookings_sql = "SELECT id, name, guests, time, table_name, date FROM reservations ORDER BY date DESC, time DESC";
+$bookings_sql = "SELECT id, name, guests, time, phone_number, table_name, date FROM reservations ORDER BY date DESC, time DESC";
 $bookings_result = $conn->query($bookings_sql);
 ?>
 
@@ -267,6 +267,7 @@ $bookings_result = $conn->query($bookings_sql);
                         <th>Name</th>
                         <th>Guests</th>
                         <th>Time</th>
+                        <th>Phone NUmber</th>
                         <th>Table</th>
                         <th>Date</th>
                         <th class="actions-column">Actions</th>
@@ -280,6 +281,7 @@ $bookings_result = $conn->query($bookings_sql);
                                 <td><?php echo htmlspecialchars($row['name']); ?></td>
                                 <td><?php echo htmlspecialchars($row['guests']); ?></td>
                                 <td><?php echo htmlspecialchars($row['time']); ?></td>
+                                <td><?php echo htmlspecialchars($row['phone_number'] ?? 'N/A'); ?></td>
                                 <td><?php echo htmlspecialchars($row['table_name']); ?></td>
                                 <td><?php echo htmlspecialchars($row['date']); ?></td>
                                 <td class="actions-column">
