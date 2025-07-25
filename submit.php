@@ -18,17 +18,19 @@ $guests = $_POST['guestCount'];
 $time = $_POST['selectedTime'];
 $table = $_POST['selectedTable'];
 $date = $_POST['date'];
+$phone = $_POST['phone'] ?? ''; // Optional field
 
+// Use prepared statements for security
+$sql = "INSERT INTO reservations (name, guests, time, table_name, date, phone_number) VALUES (?, ?, ?, ?, ?, ?)";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("sissss", $name, $guests, $time, $table, $date, $phone);
 
-// Insert into reservations table (without dish)
-$sql = "INSERT INTO reservations (name, guests, time, table_name, date)
-        VALUES ('$name', '$guests', '$time', '$table', '$date')";
-
-if ($conn->query($sql) === TRUE) {
+if ($stmt->execute()) {
   echo "success";  // JS checks for "success"
 } else {
-  echo "Error: " . $sql . "<br>" . $conn->error;
+  echo "Error: " . $stmt->error;
 }
 
+$stmt->close();
 $conn->close();
 ?>
