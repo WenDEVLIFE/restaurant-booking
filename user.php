@@ -27,8 +27,8 @@ if (isset($_POST['add_user'])) {
     $role = $_POST['role'];
     
     if (!empty($username) && !empty($password)) {
-        // Check if username already exists
-        $check_stmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
+        // Check if username already exists - FIXED: Changed 'id' to 'user_id'
+        $check_stmt = $conn->prepare("SELECT user_id FROM users WHERE username = ?");
         $check_stmt->bind_param("s", $username);
         $check_stmt->execute();
         $result = $check_stmt->get_result();
@@ -62,23 +62,34 @@ if (isset($_POST['edit_user'])) {
     $password = $_POST['password'];
     
     if (!empty($username)) {
-        if (!empty($password)) {
-            // Update with new password
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("UPDATE users SET username = ?, password = ?, role = ? WHERE user_id = ?");
-            $stmt->bind_param("sssi", $username, $hashed_password, $role, $user_id);
-        } else {
-            // Update without changing password
-            $stmt = $conn->prepare("UPDATE users SET username = ?, role = ? WHERE user_id = ?");
-            $stmt->bind_param("ssi", $username, $role, $user_id);
-        }
+        // Check if username already exists for other users - ADDED validation
+        $check_stmt = $conn->prepare("SELECT user_id FROM users WHERE username = ? AND user_id != ?");
+        $check_stmt->bind_param("si", $username, $user_id);
+        $check_stmt->execute();
+        $result = $check_stmt->get_result();
         
-        if ($stmt->execute()) {
-            $success_message = "User updated successfully!";
+        if ($result->num_rows > 0) {
+            $error_message = "Username already exists. Please choose a different username.";
         } else {
-            $error_message = "Error updating user: " . $conn->error;
+            if (!empty($password)) {
+                // Update with new password
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                $stmt = $conn->prepare("UPDATE users SET username = ?, password = ?, role = ? WHERE user_id = ?");
+                $stmt->bind_param("sssi", $username, $hashed_password, $role, $user_id);
+            } else {
+                // Update without changing password
+                $stmt = $conn->prepare("UPDATE users SET username = ?, role = ? WHERE user_id = ?");
+                $stmt->bind_param("ssi", $username, $role, $user_id);
+            }
+            
+            if ($stmt->execute()) {
+                $success_message = "User updated successfully!";
+            } else {
+                $error_message = "Error updating user: " . $conn->error;
+            }
+            $stmt->close();
         }
-        $stmt->close();
+        $check_stmt->close();
     } else {
         $error_message = "Username is required.";
     }
@@ -87,19 +98,48 @@ if (isset($_POST['edit_user'])) {
 // Handle delete request
 if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     $delete_id = intval($_GET['delete']);
-    $stmt = $conn->prepare("DELETE FROM users WHERE user_id = ?");
-    $stmt->bind_param("i", $delete_id);
     
-    if ($stmt->execute()) {
-        $success_message = "User deleted successfully!";
+    // Prevent deleting the last admin or current user
+    $check_stmt = $conn->prepare("SELECT role FROM users WHERE user_id = ?");
+    $check_stmt->bind_param("i", $delete_id);
+    $check_stmt->execute();
+    $result = $check_stmt->get_result();
+    $user_to_delete = $result->fetch_assoc();
+    
+    if ($delete_id == $_SESSION['user_id']) {
+        $error_message = "You cannot delete your own account.";
+    } elseif ($user_to_delete && $user_to_delete['role'] === 'admin') {
+        // Check if this is the last admin
+        $admin_count = $conn->query("SELECT COUNT(*) as count FROM users WHERE role = 'admin'")->fetch_assoc()['count'];
+        if ($admin_count <= 1) {
+            $error_message = "Cannot delete the last admin account.";
+        } else {
+            $stmt = $conn->prepare("DELETE FROM users WHERE user_id = ?");
+            $stmt->bind_param("i", $delete_id);
+            
+            if ($stmt->execute()) {
+                $success_message = "User deleted successfully!";
+            } else {
+                $error_message = "Error deleting user: " . $conn->error;
+            }
+            $stmt->close();
+        }
     } else {
-        $error_message = "Error deleting user: " . $conn->error;
+        $stmt = $conn->prepare("DELETE FROM users WHERE user_id = ?");
+        $stmt->bind_param("i", $delete_id);
+        
+        if ($stmt->execute()) {
+            $success_message = "User deleted successfully!";
+        } else {
+            $error_message = "Error deleting user: " . $conn->error;
+        }
+        $stmt->close();
     }
-    $stmt->close();
+    $check_stmt->close();
 }
 
 // Fetch users from database
-$result = $conn->query("SELECT user_id, username, role FROM users");
+$result = $conn->query("SELECT user_id, username, role FROM users ORDER BY user_id ASC");
 $users = [];
 if ($result) {
     while ($row = $result->fetch_assoc()) {
@@ -135,7 +175,7 @@ $conn->close();
         
         /* Navigation Styles */
         .navbar {
-              background: linear-gradient(to right, #ff5e4d, #ffc371);
+            background: linear-gradient(to right, #ff5e4d, #ffc371);
             padding: 0;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
@@ -169,7 +209,7 @@ $conn->close();
             transition: background 0.2s;
         }
         .nav-link:hover {
-              background: linear-gradient(to right, #ff5e4d, #ffc371);
+            background: rgba(255, 255, 255, 0.1);
         }
         .nav-link.active {
             background: #007bff;
@@ -330,6 +370,23 @@ $conn->close();
             padding: 4px 8px;
             font-size: 12px;
         }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+            }
+            .nav-container {
+                flex-direction: column;
+                padding: 10px;
+            }
+            .nav-menu {
+                margin-top: 10px;
+            }
+            .content {
+                padding: 15px 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -363,11 +420,11 @@ $conn->close();
         </div>
 
         <?php if ($success_message): ?>
-            <div class="message success"><?php echo $success_message; ?></div>
+            <div class="message success"><?php echo htmlspecialchars($success_message); ?></div>
         <?php endif; ?>
         
         <?php if ($error_message): ?>
-            <div class="message error"><?php echo $error_message; ?></div>
+            <div class="message error"><?php echo htmlspecialchars($error_message); ?></div>
         <?php endif; ?>
 
         <!-- Add/Edit User Form -->
@@ -394,10 +451,10 @@ $conn->close();
                 </div>
                 <div class="form-group">
                     <label for="password"><?php echo $edit_user ? 'New Password (leave blank to keep current)' : 'Password'; ?></label>
-                    <input type="password" id="password" name="password">
+                    <input type="password" id="password" name="password" <?php echo !$edit_user ? 'required' : ''; ?>>
                 </div>
                 <div class="form-actions" style="text-align: right;">
-                    <a href="user.php" class="btn btn-secondary" style="margin-right: 10px;">Cancel</a>
+                    <a href="user.php" class="btn btn-secondary" style="margin-right: 10px; margin-top: 10px;">Cancel</a>
                     <button type="submit" name="<?php echo $edit_user ? 'edit_user' : 'add_user'; ?>" class="btn btn-primary">
                         <?php echo $edit_user ? 'Update User' : 'Add User'; ?>
                     </button>
@@ -414,6 +471,11 @@ $conn->close();
                     <th>Role</th>
                     <th>Actions</th>
                 </tr>
+                <?php if (empty($users)): ?>
+                <tr>
+                    <td colspan="4" style="text-align: center; color: #666;">No users found</td>
+                </tr>
+                <?php else: ?>
                 <?php foreach ($users as $user): ?>
                 <tr>
                     <td><?= htmlspecialchars($user['user_id']) ?></td>
@@ -421,20 +483,20 @@ $conn->close();
                     <td><?= htmlspecialchars($user['role']) ?></td>
                     <td class="actions">
                         <a href="?edit=<?= $user['user_id'] ?>" class="btn btn-warning" title="Edit User">Edit</a>
+                        <?php if ($user['user_id'] != $_SESSION['user_id']): ?>
                         <a href="?delete=<?= $user['user_id'] ?>" 
                            class="btn btn-danger" 
                            onclick="return confirm('Are you sure you want to delete this user?')" 
                            title="Delete User">
                            Delete
                         </a>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>
+                <?php endif; ?>
             </table>
         </div>
-
-
-
-</html></body>    </div>    </div>
+    </div>
 </body>
 </html>

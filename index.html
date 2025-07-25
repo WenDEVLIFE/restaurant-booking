@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
-       * {
+    * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -17,227 +17,42 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-image: url('./images/bg.jpg');
       min-height: 100vh;
+      background-size: cover;
       color: #333;
     }
 
     .container {
       display: flex;
-      min-height: 100vh;
-      gap: 30px;
-      padding: 30px;
-      max-width: 1400px;
-      margin: 0 auto;
-      align-items: flex-start; /* Changed from default stretch */
-    }
-
-    /* Left Section - Dishes */
-    .left-section {
-      flex: 1;
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 24px;
-      padding: 40px;
-      backdrop-filter: blur(20px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      height: auto; /* Allow natural height */
-      max-height: none; /* Remove any height restrictions */
-      overflow: visible; /* Ensure content is not clipped */
-    }
-
-    .left-section h2 {
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: #2d3748;
-      margin-bottom: 30px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .dishes {
-      display: grid;
-      gap: 20px;
-      width: 100%; /* Ensure full width usage */
-    }
-
-    .dish {
-      display: flex;
-      align-items: center;
-      background: #fff;
-      border-radius: 20px;
-      padding: 20px;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      border: 2px solid transparent;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      position: relative;
-      overflow: hidden;
-      width: 100%; /* Ensure dishes take full width */
-      min-height: 120px; /* Set minimum height for consistency */
-    }
-
-    .dish::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .dish:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-      border-color: #667eea;
-    }
-
-    .dish:hover::before {
-      opacity: 1;
-    }
-
-    .dish.selected {
-      border-color: #667eea;
-      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-      transform: translateY(-5px);
-      box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
-    }
-
-    .dish-image-container {
-      position: relative;
-      margin-right: 20px;
-      flex-shrink: 0; /* Prevent image container from shrinking */
-    }
-
-    .dish img {
-      width: 85px;
-      height: 85px;
-      border-radius: 16px;
-      object-fit: cover;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease;
-    }
-
-    .dish:hover img {
-      transform: scale(1.05);
-    }
-
-    .dish-overlay {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      display: flex;
-      align-items: center;
       justify-content: center;
-      font-size: 0.8rem;
-      color: #667eea;
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      align-items: center;
+      min-height: 100vh;
+      padding: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
-    .dish:hover .dish-overlay {
-      opacity: 1;
-    }
-
-    .dish-info {
+    /* Main Section - Booking */
+    .main-section {
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      min-width: 0; /* Allow text to wrap properly */
-      word-wrap: break-word; /* Handle long words */
-    }
-
-    .dish-name {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: #2d3748;
-      margin: 0;
-      line-height: 1.3;
-    }
-
-    .dish-price {
-      color: #667eea;
-      font-weight: 700;
-      font-size: 1.3rem;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .dish-price::before {
-      content: '₱';
-      font-size: 1.1rem;
-      opacity: 0.8;
-    }
-
-    .dish-rating {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.9rem;
-      color: #718096;
-    }
-
-    .dish-rating .stars {
-      color: #ffd700;
-      display: flex;
-      gap: 2px;
-    }
-
-    .dish-description {
-      font-size: 0.85rem;
-      color: #718096;
-      line-height: 1.4;
-      margin-top: 5px;
-    }
-
-    .dish-badge {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      font-size: 0.7rem;
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      z-index: 2; /* Ensure badge is above other elements */
-    }
-
-    /* Right Section - Booking */
-    .right-section {
-      flex: 1.2;
       background: rgba(255, 255, 255, 0.95);
       border-radius: 24px;
       padding: 40px;
       backdrop-filter: blur(20px);
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      height: auto; /* Allow natural height */
-      max-height: none; /* Remove height restrictions */
+      max-width: 900px;
+      width: 100%;
     }
 
     .booking-header {
       margin-bottom: 35px;
+      text-align: center;
     }
 
-    .booking-header h2 {
-      font-size: 2.2rem;
+    .booking-header h1 {
+      font-size: 2.5rem;
       font-weight: 700;
       color: #2d3748;
       margin-bottom: 10px;
@@ -247,6 +62,7 @@
       background-clip: text;
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 15px;
     }
 
@@ -505,17 +321,141 @@
       margin-bottom: 20px;
     }
 
-      /* Responsive Design */
+    /* Menu Selection Styles */
+    .menu-section {
+      margin-bottom: 25px;
+    }
+
+    .menu-section h4 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #4a5568;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .menu-items {
+      display: grid;
+      gap: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 15px;
+      background: #f8fafc;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      background: #fff;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .menu-item:hover {
+      border-color: #667eea;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+    }
+
+    .menu-item.selected {
+      border-color: #667eea;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.05));
+    }
+
+    .menu-item-info {
+      flex: 1;
+    }
+
+    .menu-item-name {
+      font-weight: 600;
+      color: #2d3748;
+      font-size: 0.95rem;
+    }
+
+    .menu-item-price {
+      color: #667eea;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .menu-item-badge {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      font-size: 0.6rem;
+      padding: 2px 6px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-left: 8px;
+    }
+
+    .selected-dishes {
+      margin-top: 15px;
+      padding: 12px;
+      background: #f0f4ff;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+    }
+
+    .selected-dishes h5 {
+      color: #4a5568;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .selected-dish-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+      color: #2d3748;
+      font-size: 0.85rem;
+    }
+
+    .remove-dish {
+      color: #e53e3e;
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: background 0.2s ease;
+    }
+
+    .remove-dish:hover {
+      background: rgba(229, 62, 62, 0.1);
+    }
+
+    .total-price {
+      font-weight: 700;
+      color: #667eea;
+      border-top: 1px solid #cbd5e0;
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+
+    /* Update modal content size for menu */
+    .modal-content.reservation-modal {
+      max-width: 600px;
+      max-height: 85vh;
+    }
+
+    /* Responsive Design */
     @media (max-width: 1024px) {
       .container {
-        flex-direction: column;
         padding: 20px;
-        align-items: stretch; /* Full width on mobile */
       }
       
-      .left-section, .right-section {
+      .main-section {
         padding: 30px;
-        width: 100%; /* Ensure full width */
       }
       
       .tables {
@@ -528,7 +468,7 @@
         padding: 15px;
       }
       
-      .left-section, .right-section {
+      .main-section {
         padding: 25px;
       }
       
@@ -545,37 +485,8 @@
         margin: 20px;
       }
 
-      .dish {
-        padding: 15px;
-        min-height: 100px; /* Smaller minimum height on mobile */
-      }
-
-      .dish img {
-        width: 70px;
-        height: 70px;
-      }
-
-      .dish-image-container {
-        margin-right: 15px; /* Reduce margin on smaller screens */
-      }
-    }
-
-    @media (max-width: 480px) {
-      .dish {
-        flex-direction: column;
-        text-align: center;
-        padding: 20px;
-        min-height: auto;
-      }
-
-      .dish-image-container {
-        margin-right: 0;
-        margin-bottom: 15px;
-      }
-
-      .dish img {
-        width: 80px;
-        height: 80px;
+      .booking-header h1 {
+        font-size: 2rem;
       }
     }
   </style>
@@ -607,118 +518,9 @@
       </div>
     </div>
 
-    <div class="left-section">
-      <h2><i class="fas fa-utensils"></i> Most Popular Dishes</h2>
-      <div class="dishes">
-        <div class="dish" onclick="selectDish(this, 'Wok On Walk')">
-          <div class="dish-badge">Popular</div>
-          <div class="dish-image-container">
-            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80"
-              alt="Wok On Walk">
-            <div class="dish-overlay">
-              <i class="fas fa-star"></i>
-            </div>
-          </div>
-          <div class="dish-info">
-            <h3 class="dish-name">Wok On Walk</h3>
-            <div class="dish-rating">
-              <div class="stars">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-              </div>
-              <span>(4.9)</span>
-            </div>
-            <p class="dish-description">Authentic Asian stir-fry with fresh vegetables and signature sauce</p>
-            <div class="dish-price">450</div>
-          </div>
-        </div>
-
-        <div class="dish" onclick="selectDish(this, 'Grilled Tofu Bowl')">
-          <div class="dish-badge">Healthy</div>
-          <div class="dish-image-container">
-            <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=400&q=80"
-              alt="Grilled Tofu Bowl">
-            <div class="dish-overlay">
-              <i class="fas fa-leaf"></i>
-            </div>
-          </div>
-          <div class="dish-info">
-            <h3 class="dish-name">Grilled Tofu Bowl</h3>
-            <div class="dish-rating">
-              <div class="stars">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="far fa-star"></i>
-              </div>
-              <span>(4.6)</span>
-            </div>
-            <p class="dish-description">Perfectly grilled tofu with quinoa and seasonal vegetables</p>
-            <div class="dish-price">200</div>
-          </div>
-        </div>
-
-        <div class="dish" onclick="selectDish(this, 'Spicy Tuna Bowl')">
-          <div class="dish-badge">Spicy</div>
-          <div class="dish-image-container">
-            <img src="https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=400&q=80"
-              alt="Spicy Tuna Bowl">
-            <div class="dish-overlay">
-              <i class="fas fa-fire"></i>
-            </div>
-          </div>
-          <div class="dish-info">
-            <h3 class="dish-name">Spicy Tuna Bowl</h3>
-            <div class="dish-rating">
-              <div class="stars">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star-half-alt"></i>
-              </div>
-              <span>(4.7)</span>
-            </div>
-            <p class="dish-description">Fresh tuna with spicy mayo, avocado and crispy rice</p>
-            <div class="dish-price">350</div>
-          </div>
-        </div>
-
-        <div class="dish" onclick="selectDish(this, 'Salmon Delight')">
-          <div class="dish-badge">Premium</div>
-          <div class="dish-image-container">
-            <img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=400&q=80"
-              alt="Salmon Delight">
-            <div class="dish-overlay">
-              <i class="fas fa-crown"></i>
-            </div>
-          </div>
-          <div class="dish-info">
-            <h3 class="dish-name">Salmon Delight</h3>
-            <div class="dish-rating">
-              <div class="stars">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-              </div>
-              <span>(4.8)</span>
-            </div>
-            <p class="dish-description">Premium Atlantic salmon with teriyaki glaze and jasmine rice</p>
-            <div class="dish-price">520</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="right-section">
+    <div class="main-section">
       <div class="booking-header">
-        <h2><i class="fas fa-calendar-check"></i> Restaurant Booking</h2>
+        <h1><i class="fas fa-calendar-check"></i>Restaurant Booking</h1>
         <span id="peopleCount">Guest capacity: 21</span>
       </div>
       <div class="times" id="timeButtonsContainer"></div>
@@ -817,6 +619,67 @@
             <input type="date" id="date" name="date" required>
           </div>
 
+          <!-- Menu Selection Section -->
+          <div class="menu-section">
+            <h4><i class="fas fa-utensils"></i> Select Dishes</h4>
+            <div class="menu-items" id="menuItems">
+              <div class="menu-item" onclick="toggleMenuItem(this, 'Wok On Walk', 450)">
+                <div class="menu-item-info">
+                  <div class="menu-item-name">Wok On Walk <span class="menu-item-badge">Popular</span></div>
+                  <div class="menu-item-price">₱450</div>
+                </div>
+              </div>
+              <div class="menu-item" onclick="toggleMenuItem(this, 'Grilled Tofu Bowl', 200)">
+                <div class="menu-item-info">
+                  <div class="menu-item-name">Grilled Tofu Bowl <span class="menu-item-badge">Healthy</span></div>
+                  <div class="menu-item-price">₱200</div>
+                </div>
+              </div>
+              <div class="menu-item" onclick="toggleMenuItem(this, 'Spicy Tuna Bowl', 350)">
+                <div class="menu-item-info">
+                  <div class="menu-item-name">Spicy Tuna Bowl <span class="menu-item-badge">Spicy</span></div>
+                  <div class="menu-item-price">₱350</div>
+                </div>
+              </div>
+              <div class="menu-item" onclick="toggleMenuItem(this, 'Salmon Delight', 520)">
+                <div class="menu-item-info">
+                  <div class="menu-item-name">Salmon Delight <span class="menu-item-badge">Premium</span></div>
+                  <div class="menu-item-price">₱520</div>
+                </div>
+              </div>
+              <div class="menu-item" onclick="toggleMenuItem(this, 'Chicken Teriyaki', 380)">
+                <div class="menu-item-info">
+                  <div class="menu-item-name">Chicken Teriyaki</div>
+                  <div class="menu-item-price">₱380</div>
+                </div>
+              </div>
+              <div class="menu-item" onclick="toggleMenuItem(this, 'Beef Bulgogi', 450)">
+                <div class="menu-item-info">
+                  <div class="menu-item-name">Beef Bulgogi</div>
+                  <div class="menu-item-price">₱450</div>
+                </div>
+              </div>
+              <div class="menu-item" onclick="toggleMenuItem(this, 'Vegetable Curry', 280)">
+                <div class="menu-item-info">
+                  <div class="menu-item-name">Vegetable Curry <span class="menu-item-badge">Vegan</span></div>
+                  <div class="menu-item-price">₱280</div>
+                </div>
+              </div>
+              <div class="menu-item" onclick="toggleMenuItem(this, 'Pad Thai', 320)">
+                <div class="menu-item-info">
+                  <div class="menu-item-name">Pad Thai</div>
+                  <div class="menu-item-price">₱320</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="selected-dishes" id="selectedDishes" style="display: none;">
+              <h5><i class="fas fa-check-circle"></i> Selected Dishes:</h5>
+              <div id="selectedDishList"></div>
+              <div class="total-price" id="totalPrice">Total: ₱0</div>
+            </div>
+          </div>
+
           <div class="form-buttons">
             <button type="submit" class="btn-confirm">Confirm Reservation</button>
             <button type="button" class="btn-cancel" onclick="closeModal('formModal')">Cancel</button>
@@ -833,13 +696,7 @@
     let selectedTable = '';
     let selectedTime = '';
     let selectedTableElement = null;
-
-    function selectDish(element, dishName) {
-      // Remove selected class from all dishes
-      document.querySelectorAll('.dish').forEach(dish => dish.classList.remove('selected'));
-      // Add selected class to clicked dish
-      element.classList.add('selected');
-    }
+    let selectedMenuItems = []; // Array to store selected menu items
 
     function selectTime(button) {
       document.querySelectorAll('.times button').forEach(btn => btn.classList.remove('selected'));
@@ -869,8 +726,74 @@
       document.getElementById('formModal').style.display = 'flex';
     }
 
+    function toggleMenuItem(element, dishName, price) {
+      const isSelected = element.classList.contains('selected');
+      
+      if (isSelected) {
+        // Remove from selection
+        element.classList.remove('selected');
+        selectedMenuItems = selectedMenuItems.filter(item => item.name !== dishName);
+      } else {
+        // Add to selection
+        element.classList.add('selected');
+        selectedMenuItems.push({ name: dishName, price: price });
+      }
+      
+      updateSelectedDishes();
+    }
+
+    function removeMenuItem(dishName) {
+      selectedMenuItems = selectedMenuItems.filter(item => item.name !== dishName);
+      
+      // Remove visual selection from menu item
+      const menuItems = document.querySelectorAll('.menu-item');
+      menuItems.forEach(item => {
+        if (item.querySelector('.menu-item-name').textContent.includes(dishName)) {
+          item.classList.remove('selected');
+        }
+      });
+      
+      updateSelectedDishes();
+    }
+
+    function updateSelectedDishes() {
+      const selectedDishesContainer = document.getElementById('selectedDishes');
+      const selectedDishList = document.getElementById('selectedDishList');
+      const totalPrice = document.getElementById('totalPrice');
+      
+      if (selectedMenuItems.length === 0) {
+        selectedDishesContainer.style.display = 'none';
+        return;
+      }
+      
+      selectedDishesContainer.style.display = 'block';
+      
+      // Update selected dishes list
+      selectedDishList.innerHTML = selectedMenuItems.map(item => `
+        <div class="selected-dish-item">
+          <span>${item.name}</span>
+          <span>
+            ₱${item.price}
+            <span class="remove-dish" onclick="removeMenuItem('${item.name}')">
+              <i class="fas fa-times"></i>
+            </span>
+          </span>
+        </div>
+      `).join('');
+      
+      // Update total price
+      const total = selectedMenuItems.reduce((sum, item) => sum + item.price, 0);
+      totalPrice.textContent = `Total: ₱${total}`;
+    }
+
     function closeModal(id) {
       document.getElementById(id).style.display = 'none';
+      // Reset menu selections when closing modal
+      if (id === 'formModal') {
+        selectedMenuItems = [];
+        document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('selected'));
+        updateSelectedDishes();
+      }
     }
 
     document.getElementById('reservationForm').addEventListener('submit', async function (e) {
@@ -894,6 +817,10 @@
       const time = document.getElementById('selectedTime').value;
       const table = document.getElementById('selectedTable').value;
       const date = document.getElementById('date').value;
+      
+      // Prepare menu data
+      const menuData = selectedMenuItems.map(item => `${item.name} (₱${item.price})`).join(', ');
+      const totalMenuPrice = selectedMenuItems.reduce((sum, item) => sum + item.price, 0);
 
       try {
         const response = await fetch('submit.php', {
@@ -905,7 +832,9 @@
             guestCount,
             selectedTime: time,
             selectedTable: table,
-            date
+            date,
+            selectedMenu: menuData,
+            totalMenuPrice: totalMenuPrice
           })
         });
 
@@ -927,7 +856,12 @@
             seat.classList.toggle('filled', index < guestCount);
           });
 
-          successText.textContent = `Reservation confirmed for ${name} with ${guestCount} guest(s) on ${date} at ${time}, Table: ${table}.`;
+          let successMessage = `Reservation confirmed for ${name} with ${guestCount} guest(s) on ${date} at ${time}, Table: ${table}.`;
+          if (selectedMenuItems.length > 0) {
+            successMessage += ` Selected dishes: ${menuData}. Total: ₱${totalMenuPrice}`;
+          }
+          
+          successText.textContent = successMessage;
 
           closeModal('formModal');
           document.getElementById('successModal').style.display = 'flex';
@@ -936,6 +870,8 @@
           document.getElementById('reservationForm').reset();
           document.getElementById('selectedTime').value = selectedTime;
           document.getElementById('date').value = document.getElementById('date').value;
+          selectedMenuItems = [];
+          updateSelectedDishes();
 
           // Refresh reservations to ensure consistency
           updateReservations();
