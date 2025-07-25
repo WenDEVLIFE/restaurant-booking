@@ -20,16 +20,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $conn = new mysqli('localhost', 'root', '', 'restaurant');
         if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 
-        $stmt = $conn->prepare("INSERT INTO users (username, password, role) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $username, $hashedPassword, $role);
+        // Check if username exists
+        $checkStmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
+        $checkStmt->bind_param("s", $username);
+        $checkStmt->execute();
+        $checkStmt->store_result();
 
-        if ($stmt->execute()) {
-            $success = "Registration successful!";
+        if ($checkStmt->num_rows > 0) {
+            $errors[] = "Username already exists. Please choose another.";
+            $checkStmt->close();
         } else {
-            $errors[] = "Error: " . $stmt->error;
+            $checkStmt->close();
+            $stmt = $conn->prepare("INSERT INTO users (username, password, role) VALUES (?, ?, ?)");
+            $stmt->bind_param("sss", $username, $hashedPassword, $role);
+
+            if ($stmt->execute()) {
+                $success = "Registration successful!";
+            } else {
+                $errors[] = "Error: " . $stmt->error;
+            }
+
+            $stmt->close();
         }
 
-        $stmt->close();
         $conn->close();
     }
 }
