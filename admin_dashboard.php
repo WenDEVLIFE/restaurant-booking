@@ -175,7 +175,7 @@ $bookings_result = $conn->query($bookings_sql);
 </head>
 <body>
     <div class="header">
-        <h1>Admin Dashboard</h1>
+        <h1>Dashboard</h1>
         <div class="user-info">
             <span>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</span>
             <a href="?logout=1" class="logout-btn" onclick="return confirm('Are you sure you want to logout?')">Logout</a>
